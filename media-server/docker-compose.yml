@@ -21,7 +21,7 @@ services:
         limits:
           memory: 512M
     restart: unless-stopped
-  
+
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
@@ -52,7 +52,7 @@ services:
     ports:
       - 19035:19035
       - 19037:19037
-    loggin:
+    logging:
       driver: "json-file"
       options:
         max-size: "100M"
@@ -103,6 +103,8 @@ services:
       - ./jellyfin/config:/config
       - ./jellyfin/cache:/cache
       - /media-storage/media:/media
+    ports:
+      - 8096:8096
     devices:
       - /dev/dri:/dev/dir
     deploy:
