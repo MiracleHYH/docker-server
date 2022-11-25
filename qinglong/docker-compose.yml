@@ -3,7 +3,6 @@ version: '3'
 services:
   qinglong:
     image: whyour/qinglong:latest
-    container_name: qinglong
     volumes:
       - ./data:/ql/data
     ports:

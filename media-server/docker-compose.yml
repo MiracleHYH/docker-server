@@ -5,9 +5,9 @@ services:
     image: dperson/samba:latest
     container_name: samba
     environment:
-      - TZ=Asia/Shanghai
-      - PUID=PUID
-      - PGID=PGID
+      - PUID
+      - PGID
+      - TZ
     volumes:
       - /media-storage:/share
     ports:
@@ -26,9 +26,9 @@ services:
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
-      - PUID=PUID
-      - PGID=PGID
-      - TZ=Asia/Shanghai
+      - PUID
+      - PGID
+      - TZ
       - AUTO_UPDATE=true
     volumes:
       - ./jackett/config:/config
@@ -36,13 +36,69 @@ services:
       - 9117:9117
     restart: unless-stopped
 
+  chinesesubfinder:
+    image: allanpk716/chinesesubfinder:latest
+    container_name: chinesesubfinder
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - UMASK
+      - PERMS=false
+    volumes:
+      - ./chinesesubfinder/config:/config
+      - ./chinesesubfinder/browser:/root/.cache/rod/browser
+      - /media-storage/media:/media
+    ports:
+      - 19035:19035
+      - 19037:19037
+    loggin:
+      driver: "json-file"
+      options:
+        max-size: "100M"
+    restart: unless-stopped
+  
+  qbittorrent:
+    image: linuxserver/qbittorrent:14.3.9
+    container_name: qbittorrent
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - WEBUI_PORT=8888
+    volumes:
+      - ./qbittorrent/config:/config
+      - /media-storage/downloads:/downloads
+    network_mode: host
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    restart: unless-stopped
+
+  nas-tools:
+    image: jxxghp/nas-tools:latest
+    container_name: nas-tools
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - UMASK
+      - NASTO0L_AUTO_UPDATE=true
+    volumes:
+      - ./nas-tools/config:/config
+      - /media-storage:/media-storage
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
   jellyfin:
     image: nyanmisaka/jellyfin:latest
     container_name: jellyfin
     environment:
-      - PUID=PUID
-      - PGID=PGID
-      - TZ=Asia/Shanghai
+      - PUID
+      - PGID
+      - TZ
     volumes:
       - ./jellyfin/config:/config
       - ./jellyfin/cache:/cache
